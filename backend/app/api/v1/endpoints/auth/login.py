@@ -16,10 +16,12 @@ from app.core.database import get_db
 from app.core.security import (
     verify_password,
     create_access_token,
-    create_refresh_token
+    create_refresh_token,
+    decode_token,
 )
 from app.models import User, AuditLog
 from app.api.deps import get_current_user
+from app.schemas.token import RefreshTokenRequest, Token
 
 router = APIRouter()
 
@@ -163,4 +165,44 @@ def get_current_user_info(
         is_active=current_user.is_active,
         is_verified=current_user.is_verified,
         last_login=current_user.last_login
+    )
+
+
+@router.post("/refresh", response_model=Token)
+def refresh_token(
+    refresh_data: RefreshTokenRequest,
+    db: Session = Depends(get_db)
+):
+    """Refresh access token using a valid refresh token."""
+    payload = decode_token(refresh_data.refresh_token)
+
+    if not payload or payload.get("type") != "refresh":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid refresh token"
+        )
+
+    user_id_raw = payload.get("sub")
+    try:
+        user_id = int(user_id_raw)
+    except (TypeError, ValueError):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid refresh token"
+        )
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user or not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found or inactive"
+        )
+
+    access_token = create_access_token(data={"sub": str(user.id), "role": user.role.value})
+    new_refresh_token = create_refresh_token(data={"sub": str(user.id), "role": user.role.value})
+
+    return Token(
+        access_token=access_token,
+        refresh_token=new_refresh_token,
+        token_type="bearer",
     )

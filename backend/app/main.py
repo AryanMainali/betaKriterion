@@ -10,6 +10,7 @@ from app.core.database import engine, Base, SessionLocal
 from app.core.logging import logger, set_request_id
 from app.core.security import get_password_hash
 from app.api.v1.api import api_router
+from app.api.v1.endpoints.auth import router as auth_router
 from app.models import Language, DEFAULT_LANGUAGES, User, UserRole
 
 
@@ -150,6 +151,10 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 # Include API routes
 app.include_router(api_router, prefix="/api/v1")
+
+# Backward-compatible auth aliases for deployments with stale frontend path config.
+app.include_router(auth_router, prefix="/api/auth")
+app.include_router(auth_router, prefix="/auth")
 
 
 @app.get("/health")
