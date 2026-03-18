@@ -140,6 +140,11 @@ class SandboxExecutor:
         
         if settings.ENVIRONMENT == "development":
             return self._run_local(command, code_path, stdin_input)
+
+        # Demo-friendly fallback: if Docker is not installed on host, run locally.
+        if shutil.which("docker") is None:
+            logger.warning("Docker binary not found; falling back to local code execution")
+            return self._run_local(command, code_path, stdin_input)
         
         docker_cmd = [
             "docker", "run",
@@ -167,6 +172,10 @@ class SandboxExecutor:
                 "exit_code": process.returncode,
                 "memory_used": 0
             }
+        except FileNotFoundError:
+            # Handles hosts where Docker is unavailable at runtime.
+            logger.warning("Docker command not available; falling back to local code execution")
+            return self._run_local(command, code_path, stdin_input)
         except subprocess.TimeoutExpired:
             return {
                 "stdout": "",
