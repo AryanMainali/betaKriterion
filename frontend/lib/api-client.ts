@@ -1,7 +1,15 @@
 import axios, { AxiosInstance} from 'axios';
 
 const PUBLIC_API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-const API_BASE_URL = PUBLIC_API.endsWith('/api/v1') ? PUBLIC_API : `${PUBLIC_API.replace(/\/$/, '')}/api/v1`;
+
+function buildApiBaseUrl(rawUrl: string): string {
+    const normalized = rawUrl.replace(/\/$/, '');
+    if (normalized.endsWith('/api/v1')) return normalized;
+    if (normalized.endsWith('/api')) return `${normalized}/v1`;
+    return `${normalized}/api/v1`;
+}
+
+const API_BASE_URL = buildApiBaseUrl(PUBLIC_API);
 
 class ApiClient {
     private client: AxiosInstance;

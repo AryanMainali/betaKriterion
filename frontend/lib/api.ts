@@ -3,8 +3,17 @@ import Cookies from 'js-cookie';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
+function buildApiBaseUrl(rawUrl: string): string {
+  const normalized = rawUrl.replace(/\/$/, '');
+  if (normalized.endsWith('/api/v1')) return normalized;
+  if (normalized.endsWith('/api')) return `${normalized}/v1`;
+  return `${normalized}/api/v1`;
+}
+
+const API_BASE_URL = buildApiBaseUrl(API_URL);
+
 export const api = axios.create({
-  baseURL: `${API_URL}/api/v1`,
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -37,7 +46,7 @@ api.interceptors.response.use(
       try {
         const refreshToken = Cookies.get('refresh_token');
         if (refreshToken) {
-          const response = await axios.post(`${API_URL}/api/v1/auth/refresh`, {
+          const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
             refresh_token: refreshToken,
           });
 
