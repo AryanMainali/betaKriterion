@@ -150,7 +150,7 @@ class GradingService:
                 submission.rubric_score = None
                 submission.raw_score = raw_score
                 submission.final_score = final_score
-                submission.status = SubmissionStatus.AUTOGRADED
+                submission.status = SubmissionStatus.GRADED
                 submission.graded_at = datetime.utcnow()
                 self.db.commit()
                 logger.info(f"Grading completed for submission {submission_id}: {final_score:.2f}%")
@@ -166,9 +166,17 @@ class GradingService:
 
         except Exception as e:
             logger.error(f"Error grading submission {submission_id}: {str(e)}")
-            submission.status = SubmissionStatus.ERROR
-            submission.error_message = str(e)
-            self.db.commit()
+            # Reset broken transaction state before attempting follow-up DB writes.
+            self.db.rollback()
+            try:
+                failed_submission = self.db.query(Submission).filter(Submission.id == submission_id).first()
+                if failed_submission:
+                    failed_submission.status = SubmissionStatus.ERROR
+                    failed_submission.error_message = str(e)
+                    self.db.commit()
+            except Exception as db_err:
+                self.db.rollback()
+                logger.error(f"Failed to persist error state for submission {submission_id}: {db_err}")
             raise
         finally:
             if temp_dir and Path(temp_dir).exists():

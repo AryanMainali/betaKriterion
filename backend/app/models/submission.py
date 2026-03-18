@@ -10,7 +10,9 @@ from app.core.database import Base
 
 class SubmissionStatus(str, PyEnum):
     PENDING = "pending"          # Just submitted, waiting to be processed
-    AUTOGRADED = "autograded"           # Auto-grading complete
+    PROCESSING = "processing"    # In progress
+    GRADED = "graded"            # Auto or manually graded
+    AUTOGRADED = "graded"        # Backward-compatible alias
     MANUAL_REVIEW = "manual_review"  # Needs manual review
     COMPLETED = "completed"      # Fully graded
     ERROR = "error"             # Error during processing
