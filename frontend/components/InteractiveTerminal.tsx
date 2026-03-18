@@ -18,7 +18,7 @@ export interface InteractiveTerminalProps {
     running: boolean;
     exitCode: number | null;
     onSendStdin: (line: string) => void;
-    outputEndRef?: React.RefObject<HTMLDivElement | null>;
+    outputEndRef?: React.RefObject<HTMLDivElement>;
     emptyMessage?: string;
     placeholder?: string;
     className?: string;
@@ -52,7 +52,7 @@ const InteractiveTerminalInner = forwardRef<InteractiveTerminalRef, InteractiveT
     ) => {
         const [inputLine, setInputLine] = React.useState('');
         const inputRef = useRef<HTMLInputElement>(null);
-        const localOutputEndRef = useRef<HTMLDivElement>(null);
+        const localOutputEndRef = useRef<HTMLDivElement>(null!);
         const outputEndRef = outputEndRefProp ?? localOutputEndRef;
 
         useImperativeHandle(ref, () => ({

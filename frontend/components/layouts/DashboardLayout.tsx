@@ -226,25 +226,6 @@ export function DashboardLayout({ children, hideTopNav = false }: DashboardLayou
         }, NAV_DELAY);
     };
 
-    if (!user) return null;
-
-    const currentUser = user!;
-
-    const navItems = getNavItems(currentUser.role);
-    const topNavItems = getTopNavItems(currentUser.role);
-    const isAdmin = currentUser.role === 'ADMIN';
-    const isAdminDashboard = isAdmin && (pathname === '/admin/dashboard' || pathname.startsWith('/admin/dashboard/'));
-
-    // For students, remove the primary learning nav from the sidebar since we show it in the top nav
-    // Also remove 'Help' and 'Settings' from the sidebar and surface them in the profile menu
-    const sidebarItems = currentUser.role === 'STUDENT'
-        ? navItems.filter(i => !['Dashboard', 'My Courses', 'Assignments', 'Grades', 'Progress', 'Schedule', 'Help', 'Settings'].includes(i.label))
-        : navItems;
-
-    const handleLogout = () => {
-        logout();
-    };
-
     React.useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
@@ -267,6 +248,25 @@ export function DashboardLayout({ children, hideTopNav = false }: DashboardLayou
         const t = setTimeout(() => setContentVisible(true), 80);
         return () => clearTimeout(t);
     }, [pathname]);
+
+    if (!user) return null;
+
+    const currentUser = user;
+
+    const navItems = getNavItems(currentUser.role);
+    const topNavItems = getTopNavItems(currentUser.role);
+    const isAdmin = currentUser.role === 'ADMIN';
+    const isAdminDashboard = isAdmin && (pathname === '/admin/dashboard' || pathname.startsWith('/admin/dashboard/'));
+
+    // For students, remove the primary learning nav from the sidebar since we show it in the top nav
+    // Also remove 'Help' and 'Settings' from the sidebar and surface them in the profile menu
+    const sidebarItems = currentUser.role === 'STUDENT'
+        ? navItems.filter(i => !['Dashboard', 'My Courses', 'Assignments', 'Grades', 'Progress', 'Schedule', 'Help', 'Settings'].includes(i.label))
+        : navItems;
+
+    const handleLogout = () => {
+        logout();
+    };
 
     return (
         <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
@@ -534,7 +534,7 @@ export function DashboardLayout({ children, hideTopNav = false }: DashboardLayou
                             <h2 className="text-center text-xl font-semibold text-gray-900 mb-3">Sign out?</h2>
                             
                             {/* Description */}
-                            <p className="text-center text-sm text-gray-600 mb-8">You'll be signed out of your account.</p>
+                            <p className="text-center text-sm text-gray-600 mb-8">You&apos;ll be signed out of your account.</p>
                             
                             {/* Buttons */}
                             <div className="flex gap-3 justify-center">

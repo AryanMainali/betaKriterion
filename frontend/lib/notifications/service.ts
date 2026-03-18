@@ -4,7 +4,7 @@ import apiClient from '@/lib/api-client';
 
 export interface NotificationItem {
     id: number;
-    user_id: number;
+    user_id?: number;
     type: NotificationType;
     title: string;
     message: string;
@@ -15,6 +15,10 @@ export interface NotificationItem {
     is_read: boolean;
     read_at?: string;
     created_at: string;
+}
+
+function isNotificationType(type: string): type is NotificationType {
+    return type in NOTIFICATION_TYPE_CONFIG;
 }
 
 export function supportsRole(type: NotificationType, role: UserRole): boolean {
@@ -36,7 +40,10 @@ export function sortByLatest(notifications: NotificationItem[]): NotificationIte
 
 export async function fetchNotificationsByRole(role: UserRole): Promise<NotificationItem[]> {
     try {
-        const notifications = await apiClient.getNotifications(0, 50);
+        const notificationsRaw = await apiClient.getNotifications(0, 50);
+        const notifications = notificationsRaw.filter(
+            (notification): notification is NotificationItem => isNotificationType(notification.type),
+        );
         const filtered = filterNotificationsByRole(notifications, role);
         return sortByLatest(filtered);
     } catch (error) {

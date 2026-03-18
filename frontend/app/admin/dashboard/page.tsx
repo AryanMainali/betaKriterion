@@ -49,7 +49,7 @@ export default function AdminDashboard() {
                     <div>
                         <h1 className="text-2xl font-bold">Welcome back, Admin!</h1>
                         <p className="text-white/80 mt-1">
-                            Here's what's happening with your grading system today.
+                            Here&apos;s what&apos;s happening with your grading system today.
                         </p>
                     </div>
                 </div>

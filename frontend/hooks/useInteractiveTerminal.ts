@@ -14,7 +14,7 @@ export function useInteractiveTerminal({ assignmentId, onError }: UseInteractive
     const [running, setRunning] = useState(false);
     const [exitCode, setExitCode] = useState<number | null>(null);
     const wsRef = useRef<WebSocket | null>(null);
-    const outputEndRef = useRef<HTMLDivElement>(null);
+    const outputEndRef = useRef<HTMLDivElement>(null!);
 
     const start = useCallback(
         (files: { name: string; content: string }[]) => {

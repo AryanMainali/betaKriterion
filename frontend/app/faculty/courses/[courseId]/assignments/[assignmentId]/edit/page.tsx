@@ -2,7 +2,7 @@
 
 import React, { useMemo } from 'react';
 import { useParams } from 'next/navigation';
-import { AssignmentUpsertPage } from '../../new/page';
+import { AssignmentUpsertPage } from '../../new/AssignmentUpsertPage';
 
 export default function EditAssignmentPage() {
     const params = useParams();

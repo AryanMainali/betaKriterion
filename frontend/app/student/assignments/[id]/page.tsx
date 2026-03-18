@@ -688,7 +688,7 @@ export default function StudentAssignmentPage() {
                     <div className="text-center space-y-6 p-8 border border-[#3c3c3c] rounded-xl bg-[#252526] max-w-md">
                         <AlertCircle className="w-16 h-16 mx-auto text-[#f44747]" />
                         <h2 className="text-xl font-bold text-[#cccccc]">Assignment Not Found</h2>
-                        <p className="text-sm text-[#858585]">This assignment doesn't exist or you don't have access.</p>
+                        <p className="text-sm text-[#858585]">This assignment doesn&apos;t exist or you don&apos;t have access.</p>
                         <Button onClick={() => router.push('/student/courses')} className="bg-[#0e639c] hover:bg-[#1177bb] text-white">
                             <ArrowLeft className="w-4 h-4 mr-2" /> Back to Courses
                         </Button>
@@ -1745,7 +1745,7 @@ export default function StudentAssignmentPage() {
                         <div className="text-center space-y-1">
                             <h3 className="text-xl font-bold text-gray-900">Submitted Successfully</h3>
                             <p className="text-sm text-gray-600 max-w-xs">
-                                Your code has been submitted for grading. You'll see your results once grading is complete.
+                                Your code has been submitted for grading. You&apos;ll see your results once grading is complete.
                             </p>
                         </div>
                         {maxAttempts > 0 && (

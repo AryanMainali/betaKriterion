@@ -606,7 +606,7 @@ export const TerminalInputComponent: React.FC<TerminalInputComponentProps> = ({
             >
                 {output.length === 0 && !isRunning && (
                     <div className="text-[#505050] text-[12px] space-y-2">
-                        <p>💡 Click "Run" to start the program.</p>
+                        <p>💡 Click &quot;Run&quot; to start the program.</p>
                         <p>When the program asks for input, type in the box below and press Enter.</p>
                     </div>
                 )}

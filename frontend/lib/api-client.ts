@@ -353,11 +353,6 @@ class ApiClient {
         return response.data;
     }
 
-    async getSubmissionFileContent(submissionId: number, fileId: number) {
-        const response = await this.client.get(`/submissions/${submissionId}/files/${fileId}/content`);
-        return response.data;
-    }
-
     async saveManualGrade(submissionId: number, data: {
         final_score?: number;
         feedback?: string;
@@ -617,13 +612,13 @@ class ApiClient {
         return response.data;
     }
 
-    async getNotifications(unreadOnly: boolean = false, limit: number = 20) {
-        const response = await this.client.get('/notifications', {
-            params: {
-                unread_only: unreadOnly,
-                limit,
-            },
-        });
+    async getNotifications(unreadOnlyOrSkip: boolean | number = false, limit: number = 20) {
+        const params =
+            typeof unreadOnlyOrSkip === 'number'
+                ? { skip: unreadOnlyOrSkip, limit }
+                : { unread_only: unreadOnlyOrSkip, limit };
+
+        const response = await this.client.get('/notifications', { params });
         return response.data as Array<{
             id: number;
             type: string;
@@ -692,14 +687,6 @@ class ApiClient {
         formData.append('reviewer_notes', reviewerNotes);
         const response = await this.client.put(`/submissions/plagiarism-matches/${matchId}/review`, formData, {
             headers: { 'Content-Type': undefined as unknown as string },
-        });
-        return response.data;
-    }
-
-    // Notification endpoints
-    async getNotifications(skip: number = 0, limit: number = 50) {
-        const response = await this.client.get('/notifications', {
-            params: { skip, limit }
         });
         return response.data;
     }

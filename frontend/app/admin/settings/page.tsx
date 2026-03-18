@@ -146,7 +146,7 @@ export default function SettingsPage() {
 
                 {hasChanges && (
                     <Alert type="warning" title="Unsaved Changes">
-                        You have unsaved changes. Don't forget to save before leaving.
+                        You have unsaved changes. Don&apos;t forget to save before leaving.
                     </Alert>
                 )}
 
