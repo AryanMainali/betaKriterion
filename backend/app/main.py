@@ -152,6 +152,9 @@ async def global_exception_handler(request: Request, exc: Exception):
 # Include API routes
 app.include_router(api_router, prefix="/api/v1")
 
+# Compatibility alias for deployments configured with /v1 base path.
+app.include_router(api_router, prefix="/v1")
+
 # Backward-compatible auth aliases for deployments with stale frontend path config.
 app.include_router(auth_router, prefix="/api/auth")
 app.include_router(auth_router, prefix="/auth")
